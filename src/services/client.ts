@@ -12,6 +12,7 @@ import {
 
 import { FROM } from "../common/enums/MESSAGE"
 import { isAfter, isValid } from "date-fns"
+import { generateUuid } from "../helpers/generateUuid"
 
 export const getClients = async (filters: IClientFilters) => {
 
@@ -65,10 +66,10 @@ export const createClient = async (client: IClient) => {
 
 export const loginClient = async (email: string) => {
 
-    const client = await obtainClientByEmail(email)
+    let client = await obtainClientByEmail(email)
 
     if (!client) {
-        return RequestResponse(404, "Client not found", true, [])
+        client = await createClientDB({uuid: generateUuid(), name: email, email: email, phone: ""})
     }
 
     const JWT_SECRET = process.env['SECRET_KEY_JWT'] || ""

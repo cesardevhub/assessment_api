@@ -2,7 +2,7 @@ import { ClientModel } from "../models/client"
 import { IClient, IClientFilters } from "../common/interfaces/IClient"
 
 export const createClientDB = async (client: IClient) => {
-    await ClientModel.create(client)
+    return await ClientModel.create(client)
 }
 
 export const obtainClientByUuid = async (uuid: string) => {
