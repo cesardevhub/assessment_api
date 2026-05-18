@@ -4,7 +4,7 @@ import http from 'http'
 
 import { initSocket } from './socket'
 import { syncActiveConversations } from '../cron/syncActiveConversations'
-// import { syncCatalog } from '../cron/syncCatalog'
+import { syncCatalog } from '../cron/syncCatalog'
 
 import userRoutes from '../routes/user.routes'
 import roleRoutes from '../routes/role.routes'
@@ -51,7 +51,7 @@ export const initServer = (): Promise<void> => {
 
         initSocket(server)
         syncActiveConversations()
-        // syncCatalog()
+        syncCatalog()
 
         server.listen(port, () => {
             console.log('Server running on port', port);
