@@ -21,8 +21,19 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(cookieParser())
 
+const allowedOrigins = (process.env['CORS_ORIGIN'] ?? '')
+    .split(',')
+    .map(o => o.trim())
+    .filter(Boolean);
+
 app.use(cors({
-    origin: `${process.env['CORS_ORIGIN']}`,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     allowedHeaders: ['Content-Type', 'Cookie']
 }))
@@ -36,7 +47,7 @@ app.use('/api/conversations', conversationRoutes)
 export const initServer = (): Promise<void> => {
     return new Promise((resolve) => {
 
-        const port = process.env['SERVER_PORT'];
+        const port = process.env['PORT'] || process.env['SERVER_PORT'];
 
         initSocket(server)
         syncActiveConversations()
